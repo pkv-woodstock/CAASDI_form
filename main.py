@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Float
+import os
 
 app = Flask(__name__)
 app.secret_key = 'some_secret_key'
@@ -12,12 +13,23 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///users.db"
+# Replace username, password, localhost, and dbname with your actual MySQL credentials and database name.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql://username:password@localhost/database_name')
+
 
 # Create the extension
 db = SQLAlchemy(model_class=Base)
 # Initialise the app with the extension
 db.init_app(app)
+
+
+###########
+# # Create the database
+# mysql -u username -p -e "CREATE DATABASE dbname;"
+#
+# # Run the Flask application to create the tables
+# python main.py
+###########
 
 
 # user model for database
